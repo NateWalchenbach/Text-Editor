@@ -1,8 +1,8 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const WebpackPwaManifest = require("webpack-pwa-manifest");
 const path = require("path");
 const { InjectManifest } = require("workbox-webpack-plugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = () => {
   return {
@@ -14,29 +14,31 @@ module.exports = () => {
     output: {
       filename: "[name].bundle.js",
       path: path.resolve(__dirname, "dist"),
-      publicPath: "",
     },
-    // Add and configure workbox plugins for a service worker and manifest file.
     plugins: [
       new HtmlWebpackPlugin({
         template: "./index.html",
-        title: "Webpack Plugin",
+        title: "markdown",
       }),
-      new MiniCssExtractPlugin(),
+
+      new CopyWebpackPlugin({
+        patterns: [{ from: "favicon.ico", to: "favicon.ico" }],
+      }),
+
       new InjectManifest({
         swSrc: "./src-sw.js",
-        swDest: "service-worker.js",
+        swDest: "src-sw.js",
       }),
-      // Creates a manifest.json file.
+
       new WebpackPwaManifest({
         fingerprints: false,
         inject: true,
-        name: "Contact Cards",
-        short_name: "Contact",
-        description: "Never forget your contacts!",
-        background_color: "#225ca3",
-        theme_color: "#225ca3",
-        // start_url: '/',
+        name: "markup",
+        short_name: "markup",
+        description: "mark it up or type it down!",
+        background_color: "black",
+        theme_color: "black",
+        start_url: "/",
         publicPath: "/",
         icons: [
           {
@@ -49,18 +51,16 @@ module.exports = () => {
     ],
 
     module: {
+      // CSS loaders
       rules: [
         {
           test: /\.css$/i,
-          use: [MiniCssExtractPlugin.loader, "css-loader"],
-        },
-        {
-          test: /\.(png|svg|jpg|jpeg|gif)$/i,
-          type: "asset/resource",
+          use: ["style-loader", "css-loader"],
         },
         {
           test: /\.m?js$/,
-          exclude: /(node_modules|bower_components)/,
+          exclude: /node_modules/,
+          // We use babel-loader in order to use ES6.
           use: {
             loader: "babel-loader",
             options: {

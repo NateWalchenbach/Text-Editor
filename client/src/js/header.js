@@ -1,12 +1,11 @@
-const header = `
-/*
-       _____  ____________
-      / /   |/_  __/ ____/
- __  / / /| | / / / __/   
-/ /_/ / ___ |/ / / /___   
- ____/_/  |_/_/ /_____/   
-just another text editor
-*/                          
+const header = `/*
+                 _             
+  _ __  __ _ _ _| |___  _ _ __ 
+ | '  \\/ _\` | '_| / / || | \'_ \\
+ |_|_|_\\__,_|_| |_\\_\\\\_,_| .__/
+        mark it up!      |_|   
+*/
 `;
+// extra escape characters above to allow for \
 
 export { header };

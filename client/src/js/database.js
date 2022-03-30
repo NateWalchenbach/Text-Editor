@@ -1,40 +1,45 @@
 import { openDB } from "idb";
 
 const initdb = async () =>
-  openDB("jate", 1, {
+  openDB("markupDB", 1, {
     upgrade(db) {
-      if (db.objectStoreNames.contains("jate")) {
-        console.log("jate database already exists");
+      if (db.objectStoreNames.contains("markup")) {
+        console.log("markup store already exists");
         return;
       }
-      db.createObjectStore("jate", { keyPath: "id", autoIncrement: true });
-      console.log("jate database created");
+      db.createObjectStore("markup", { keyPath: "id", autoIncrement: true });
+      console.log("markup store created");
     },
   });
 
+/**
+ * This method puts the given data to the database.
+ * @param {string} content - text to save in the database
+ */
 export const putDb = async (content) => {
-  const jateDb = await openDB("jate", 1);
-
-  const tx = jateDb.transaction("jate", "readwrite");
-
-  const store = tx.objectStore("jate");
-
-  const request = store.add({ content: content });
-
+  console.log("PUT to the database");
+  const markupDB = await openDB("markupDB", 1);
+  const tx = markupDB.transaction("markup", "readwrite");
+  const store = tx.objectStore("markup");
+  // hard-code to id 1 for now
+  const request = store.put({ id: 1, content });
   const result = await request;
   console.log("🚀 - data saved to the database", result);
 };
+
+/**
+ * This method gets the data from the database.
+ * @returns {object} { id, content }
+ */
 export const getDb = async () => {
-  const jateDb = await openDB("jate", 1);
-
-  const tx = jateDb.transaction("jate", "readonly");
-
-  const store = tx.objectStore("jate");
-
-  const request = store.getAll();
-
+  console.log("GET from the database");
+  const markupDB = await openDB("markupDB", 1);
+  const tx = markupDB.transaction("markup", "readonly");
+  const store = tx.objectStore("markup");
+  // hard-code to id 1 for now
+  const request = store.get(1);
   const result = await request;
-  console.log("result.value", result);
+  console.log("🚀 - data received from the database");
   return result;
 };
 
